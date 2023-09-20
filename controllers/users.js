@@ -8,14 +8,12 @@ const NotFoundError = require('../errors/not-found-error');
 
 const {
   AUTHENTICATED,
-  STATUS_CREATED,
   USER_NOT_FOUND_MESSAGE,
   LOGOUT,
 } = require('../constants');
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const secret = JWT_SECRET;
@@ -54,9 +52,14 @@ module.exports.createUser = (req, res, next) => {
       name,
     }))
     .then((user) => {
-      const userObject = user.toObject();
-      delete userObject.password;
-      res.status(STATUS_CREATED).send({ userObject });
+      const secret = JWT_SECRET;
+      const token = jwt.sign({ _id: user._id }, secret, { expiresIn: '7d' });
+      res.cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+        sameSite: true,
+      });
+      res.send({ message: AUTHENTICATED });
     })
     .catch((err) => {
       if (err.code === 11000) {
