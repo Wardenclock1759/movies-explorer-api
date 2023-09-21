@@ -14,7 +14,7 @@ module.exports.getMovies = (req, res, next) => {
 
   return Movie.find({ owner: userId })
     .then((movies) => {
-      res.send({ movies });
+      res.send(movies);
     })
     .catch(next);
 };
@@ -35,6 +35,7 @@ module.exports.createMovie = (req, res, next) => {
   } = req.body;
 
   const userId = req.user._id;
+
   Movie.create(
     {
       country,
@@ -62,10 +63,10 @@ module.exports.createMovie = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  const { movieId } = req.params;
+  const { _id } = req.params;
   const currentUserId = req.user._id;
 
-  return Movie.find({ movieId })
+  return Movie.findOne({ movieId: _id, owner: currentUserId })
     .then((movie) => {
       if (!movie) {
         throw new NotFoundError(MOVIE_FOUND_MESSAGE);

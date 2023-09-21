@@ -11,7 +11,7 @@ const movieSchema = new mongoose.Schema({
     required: true,
   },
   duration: {
-    type: String,
+    type: Number,
     required: true,
   },
   year: {
@@ -29,7 +29,7 @@ const movieSchema = new mongoose.Schema({
       validator: (v) => isURL(v),
     },
   },
-  trailerLink: {
+  trailer: {
     type: String,
     required: true,
     validate: {
@@ -61,5 +61,7 @@ const movieSchema = new mongoose.Schema({
     required: true,
   },
 });
+
+movieSchema.index({ owner: 1, movieId: 1 }, { unique: true });
 
 module.exports = mongoose.model('movie', movieSchema);
