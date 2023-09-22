@@ -20,7 +20,7 @@ mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
 });
 
-// app.use(limiter);
+app.use(limiter);
 app.use(cors);
 
 app.use((req, res, next) => {
