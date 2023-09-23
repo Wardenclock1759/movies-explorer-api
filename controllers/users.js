@@ -7,9 +7,9 @@ const ConflictError = require('../errors/conflict');
 const NotFoundError = require('../errors/not-found-error');
 
 const {
-  AUTHENTICATED,
   USER_NOT_FOUND_MESSAGE,
   LOGOUT,
+  STATUS_CREATED,
 } = require('../constants');
 
 module.exports.login = (req, res, next) => {
@@ -23,7 +23,9 @@ module.exports.login = (req, res, next) => {
         httpOnly: true,
         sameSite: true,
       });
-      res.send({ message: AUTHENTICATED });
+      const userObject = user.toObject();
+      delete userObject.password;
+      res.status(200).send({ user: userObject });
     })
     .catch(next);
 };
@@ -59,7 +61,9 @@ module.exports.createUser = (req, res, next) => {
         httpOnly: true,
         sameSite: true,
       });
-      res.send({ message: AUTHENTICATED });
+      const userObject = user.toObject();
+      delete userObject.password;
+      res.status(STATUS_CREATED).send({ user: userObject });
     })
     .catch((err) => {
       if (err.code === 11000) {
