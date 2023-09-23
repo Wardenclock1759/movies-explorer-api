@@ -1,6 +1,8 @@
 const allowedCors = [
   'https://movie.wardenclock.nomoreparties.co',
   'http://movie.wardenclock.nomoreparties.co',
+  'http://localhost:3001',
+  '*',
 ];
 
 function cors(req, res, next) {
